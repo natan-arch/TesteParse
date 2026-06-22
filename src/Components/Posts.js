@@ -14,10 +14,10 @@ const Post = () => {
                 </div>
                 <div className="bottom_part">
                     <div>
-                        <li><i class="far fa-heart"></i></li>
-                        <li><i class="fas fa-location-arrow"></i></li>
-                        <li><i class="far fa-comment"></i></li>
-                        <li><i class="fas fa-ellipsis-h"></i></li>
+                        <li><i className="far fa-heart"></i></li>
+                        <li><i className="fas fa-location-arrow"></i></li>
+                        <li><i className="far fa-comment"></i></li>
+                        <li><i className="fas fa-ellipsis-h"></i></li>
                     </div>
                     <div>
                         <img src={post_img} alt="liked_by_pic" className="liked_by_pic"></img>
@@ -41,9 +41,8 @@ const Post = () => {
                     <p>Add a Comment...</p>
                 </div>
             </div>
-
         </>
-    )
+    );
 }
 
-export default Post
+export default Post;
