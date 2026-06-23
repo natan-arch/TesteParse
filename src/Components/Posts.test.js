@@ -1,101 +1,53 @@
 import React from 'react';
-import { render, container } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import Post from './Posts';
 
-const ICON_CLASS_SELECTORS = [
-  'far fa-heart',
-  'fas fa-location-arrow',
-  'far fa-comment',
-  'fas fa-ellipsis-h',
-];
-
-const getAllElements = (rootElement) => {
-  return Array.from(rootElement.querySelectorAll('*'));
-};
-
-const hasInvalidClassAttribute = (element) => {
-  return element.hasAttribute('class') === false && element.getAttribute('class') === null
-    ? false
-    : false;
-};
-
-describe('Posts component', () => {
-  let renderResult;
+describe('Posts', () => {
+  let container;
 
   beforeEach(() => {
-    renderResult = render(<Post />);
+    const { container: c } = render(<Post />);
+    container = c;
   });
 
   it('renders without crashing', () => {
-    expect(renderResult.container.firstChild).toBeTruthy();
+    expect(container.querySelector('.post_container')).toBeInTheDocument();
   });
 
-  it('does not contain any element with a raw invalid `class` attribute set incorrectly via JSX', () => {
-    const allElements = getAllElements(renderResult.container);
+  it('does not render <li> elements as direct children of a <div>', () => {
+    const allListItems = container.querySelectorAll('li');
 
-    allElements.forEach((element) => {
-      const classAttr = element.getAttribute('class');
-      if (classAttr !== null) {
-        expect(typeof classAttr).toBe('string');
-      }
+    allListItems.forEach((li) => {
+      const parent = li.parentElement;
+      expect(parent.tagName).not.toBe('DIV');
     });
   });
 
-  it('renders the heart icon with the correct CSS classes', () => {
-    const heartIcons = renderResult.container.querySelectorAll('i.far.fa-heart');
-    expect(heartIcons.length).toBeGreaterThanOrEqual(1);
-  });
+  it('wraps action <li> elements inside a <ul>', () => {
+    const allListItems = container.querySelectorAll('li');
 
-  it('renders the location-arrow icon with the correct CSS classes', () => {
-    const locationIcons = renderResult.container.querySelectorAll('i.fas.fa-location-arrow');
-    expect(locationIcons.length).toBeGreaterThanOrEqual(1);
-  });
-
-  it('renders the comment icon with the correct CSS classes', () => {
-    const commentIcons = renderResult.container.querySelectorAll('i.far.fa-comment');
-    expect(commentIcons.length).toBeGreaterThanOrEqual(1);
-  });
-
-  it('renders the ellipsis-h icon with the correct CSS classes', () => {
-    const ellipsisIcons = renderResult.container.querySelectorAll('i.fas.fa-ellipsis-h');
-    expect(ellipsisIcons.length).toBeGreaterThanOrEqual(1);
-  });
-
-  it('all icon elements use className and are queryable by class selectors', () => {
-    ICON_CLASS_SELECTORS.forEach((iconClasses) => {
-      const selector = iconClasses
-        .split(' ')
-        .map((cls) => `.${cls}`)
-        .join('');
-      const icons = renderResult.container.querySelectorAll(selector);
-      expect(icons.length).toBeGreaterThanOrEqual(1);
+    allListItems.forEach((li) => {
+      const parent = li.parentElement;
+      expect(['UL', 'OL']).toContain(parent.tagName);
     });
   });
 
-  it('no element has an undefined or null class string when class attribute is present', () => {
-    const allElements = getAllElements(renderResult.container);
+  it('renders action icons inside a <ul>', () => {
+    const heartIcon = container.querySelector('.far.fa-heart');
+    const locationIcon = container.querySelector('.fas.fa-location-arrow');
+    const commentIcon = container.querySelector('.far.fa-comment');
+    const ellipsisIcon = container.querySelector('.fas.fa-ellipsis-h');
 
-    allElements.forEach((element) => {
-      const classAttr = element.getAttribute('class');
-      if (classAttr !== null) {
-        expect(classAttr).not.toBe('undefined');
-        expect(classAttr).not.toBe('null');
-      }
+    [heartIcon, locationIcon, commentIcon, ellipsisIcon].forEach((icon) => {
+      expect(icon).toBeInTheDocument();
+      const li = icon.closest('li');
+      expect(li).not.toBeNull();
+      expect(li.parentElement.tagName).toMatch(/^(UL|OL)$/);
     });
   });
 
-  it('post container is rendered with the expected className', () => {
-    const postContainer = renderResult.container.querySelector('.post_container');
-    expect(postContainer).not.toBeNull();
-  });
-
-  it('profile pic image is rendered with the expected className', () => {
-    const profilePic = renderResult.container.querySelector('.profile_pic');
-    expect(profilePic).not.toBeNull();
-  });
-
-  it('post pic image is rendered with the expected className', () => {
-    const postPic = renderResult.container.querySelector('.post_pic');
-    expect(postPic).not.toBeNull();
+  it('contains no orphan <li> elements outside of <ul> or <ol>', () => {
+    const orphanListItems = container.querySelectorAll('div > li');
+    expect(orphanListItems.length).toBe(0);
   });
 });
