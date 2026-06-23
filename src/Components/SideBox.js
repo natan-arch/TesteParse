@@ -7,7 +7,7 @@ const SideBox = ()=>{
         <>
         <div className="sideBox">
             <div>
-            <img src={image}  className="sideBox_main_image" alt=""></img>
+            <img src={image}  className="sideBox_main_image" alt="Foto de perfil de Jugesh Raghav"></img>
          <div>
          <h3>Jugesh Raghav</h3>
          <p>jugesh_raghav</p>
