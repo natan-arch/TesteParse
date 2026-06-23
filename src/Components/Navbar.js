@@ -5,7 +5,7 @@ return(
     <>
     <nav>
         <ul className="leftNav">
-     <img src={navLogo} alt="insta nav logo" className="logo"></img>
+            <li><img src={navLogo} alt="insta nav logo" className="logo"></img></li>
         </ul>
         <ul className="midNav">
         <i className="fas fa-search"></i>
