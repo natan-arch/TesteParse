@@ -1,16 +1,15 @@
 import "./style.css";
-import post_img from "../images/neerajchopra.webp"
 
-const Post = () => {
+const Post = ({ author, imageUrl, description }) => {
     return (
         <>
             <div className="post_container">
                 <div className="heading_part">
-                    <img src={post_img} alt="profile_pic" className="profile_pic"></img>
-                    <p className="name">Neeraj Chopra</p>
+                    <img src={imageUrl} alt="profile_pic" className="profile_pic"></img>
+                    <p className="name">{author}</p>
                 </div>
                 <div className="image_part">
-                    <img src={post_img} alt="post_pic" className="post_pic"></img>
+                    <img src={imageUrl} alt="post_pic" className="post_pic"></img>
                 </div>
                 <div className="bottom_part">
                     <ul className="post_actions">
@@ -20,19 +19,18 @@ const Post = () => {
                         <li><i className="fas fa-ellipsis-h"></i></li>
                     </ul>
                     <div>
-                        <img src={post_img} alt="liked_by_pic" className="liked_by_pic"></img>
+                        <img src={imageUrl} alt="liked_by_pic" className="liked_by_pic"></img>
                         <p className="liked_by">Liked by &nbsp; <strong style={{ display: 'inline-block' }}> jugesh_raghav </strong> &nbsp; and &nbsp;<strong> 1,234,988&nbsp; </strong> others.</p>
                     </div>
                     <div>
-                        <h4 >neeraj__chopra</h4>
-                        <p >   Still processing this feeling. To all of India and beyond, thank you so much for your support and blessings that have helped me reach this stage.
-                            This moment will live with me forever 🙏🏽🇮🇳</p>
+                        <h4>{author}</h4>
+                        <p>{description}</p>
                     </div>
                     <div>
-                        <h4 >neeraj__chopra</h4>
+                        <h4>{author}</h4>
                     </div>
                     <div>
-                        <h4 >neeraj__chopra</h4>
+                        <h4>{author}</h4>
                     </div>
                 </div>
                 <div className="comment_part">
