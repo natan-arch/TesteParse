@@ -1,5 +1,5 @@
-import Navbar from "../src/Components/Navbar"
-import Story from "../src/Components/Story"
+import Navbar from "./Components/Navbar"
+import Story from "./Components/Story"
 import SideBox from "./Components/SideBox"
 import Post from "./Components/Posts"
 const App = ()=>{
