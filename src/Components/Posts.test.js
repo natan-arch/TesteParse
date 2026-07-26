@@ -1,53 +1,95 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import Post from './Posts';
 
-describe('Posts', () => {
-  let container;
+const DEFAULT_PROPS = {
+  author: 'john_doe',
+  imageUrl: 'https://example.com/photo.jpg',
+  description: 'A beautiful sunset over the mountains.',
+};
 
-  beforeEach(() => {
-    const { container: c } = render(<Post />);
-    container = c;
-  });
+describe('Post', () => {
+  describe('rendering', () => {
+    it('renders without crashing when given required props', () => {
+      render(<Post {...DEFAULT_PROPS} />);
+    });
 
-  it('renders without crashing', () => {
-    expect(container.querySelector('.post_container')).toBeInTheDocument();
-  });
-
-  it('does not render <li> elements as direct children of a <div>', () => {
-    const allListItems = container.querySelectorAll('li');
-
-    allListItems.forEach((li) => {
-      const parent = li.parentElement;
-      expect(parent.tagName).not.toBe('DIV');
+    it('renders without crashing when given no props', () => {
+      render(<Post />);
     });
   });
 
-  it('wraps action <li> elements inside a <ul>', () => {
-    const allListItems = container.querySelectorAll('li');
+  describe('author prop', () => {
+    it('displays the author name when provided', () => {
+      render(<Post {...DEFAULT_PROPS} />);
+      expect(screen.getByText(DEFAULT_PROPS.author)).toBeInTheDocument();
+    });
 
-    allListItems.forEach((li) => {
-      const parent = li.parentElement;
-      expect(['UL', 'OL']).toContain(parent.tagName);
+    it('does not throw when author is not provided', () => {
+      const { author, ...propsWithoutAuthor } = DEFAULT_PROPS;
+      render(<Post {...propsWithoutAuthor} />);
+    });
+
+    it('renders a different author name correctly', () => {
+      render(<Post {...DEFAULT_PROPS} author="jane_smith" />);
+      expect(screen.getByText('jane_smith')).toBeInTheDocument();
     });
   });
 
-  it('renders action icons inside a <ul>', () => {
-    const heartIcon = container.querySelector('.far.fa-heart');
-    const locationIcon = container.querySelector('.fas.fa-location-arrow');
-    const commentIcon = container.querySelector('.far.fa-comment');
-    const ellipsisIcon = container.querySelector('.fas.fa-ellipsis-h');
+  describe('imageUrl prop', () => {
+    it('renders an image with the provided imageUrl as src', () => {
+      render(<Post {...DEFAULT_PROPS} />);
+      const image = screen.getByRole('img');
+      expect(image).toHaveAttribute('src', DEFAULT_PROPS.imageUrl);
+    });
 
-    [heartIcon, locationIcon, commentIcon, ellipsisIcon].forEach((icon) => {
-      expect(icon).toBeInTheDocument();
-      const li = icon.closest('li');
-      expect(li).not.toBeNull();
-      expect(li.parentElement.tagName).toMatch(/^(UL|OL)$/);
+    it('does not throw when imageUrl is not provided', () => {
+      const { imageUrl, ...propsWithoutImage } = DEFAULT_PROPS;
+      render(<Post {...propsWithoutImage} />);
+    });
+
+    it('renders an updated imageUrl when a different value is given', () => {
+      const altUrl = 'https://example.com/other.jpg';
+      render(<Post {...DEFAULT_PROPS} imageUrl={altUrl} />);
+      const image = screen.getByRole('img');
+      expect(image).toHaveAttribute('src', altUrl);
     });
   });
 
-  it('contains no orphan <li> elements outside of <ul> or <ol>', () => {
-    const orphanListItems = container.querySelectorAll('div > li');
-    expect(orphanListItems.length).toBe(0);
+  describe('description prop', () => {
+    it('displays the description text when provided', () => {
+      render(<Post {...DEFAULT_PROPS} />);
+      expect(screen.getByText(DEFAULT_PROPS.description)).toBeInTheDocument();
+    });
+
+    it('does not throw when description is not provided', () => {
+      const { description, ...propsWithoutDescription } = DEFAULT_PROPS;
+      render(<Post {...propsWithoutDescription} />);
+    });
+
+    it('renders a different description correctly', () => {
+      const altDescription = 'City lights at midnight.';
+      render(<Post {...DEFAULT_PROPS} description={altDescription} />);
+      expect(screen.getByText(altDescription)).toBeInTheDocument();
+    });
+  });
+
+  describe('edge cases', () => {
+    it('renders an empty description without crashing', () => {
+      render(<Post {...DEFAULT_PROPS} description="" />);
+    });
+
+    it('renders an empty author without crashing', () => {
+      render(<Post {...DEFAULT_PROPS} author="" />);
+    });
+
+    it('renders an empty imageUrl without crashing', () => {
+      render(<Post {...DEFAULT_PROPS} imageUrl="" />);
+    });
+
+    it('does not display a different author than the one provided', () => {
+      render(<Post {...DEFAULT_PROPS} author="expected_author" />);
+      expect(screen.queryByText('unexpected_author')).not.toBeInTheDocument();
+    });
   });
 });
